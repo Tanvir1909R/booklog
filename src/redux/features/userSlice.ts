@@ -30,12 +30,13 @@ export const createUser = createAsyncThunk(
   }
 );
 export const userSignIn = createAsyncThunk(
-  "user/logout",
+  "user/signin",
   async ({ email, password }: { email: string; password: string }) => {
     const data = await signInWithEmailAndPassword(auth, email, password);
     return data.user.email;
   }
 );
+
 
 const userSlice = createSlice({
   name: "user",

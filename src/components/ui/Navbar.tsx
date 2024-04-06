@@ -1,14 +1,23 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { useAppSelector } from "../../redux/store";
+import { useAppDispatch, useAppSelector } from "../../redux/store";
+import { signOut } from "firebase/auth";
+import { auth } from "../../firebase/firebase";
+import { setUser } from "../../redux/features/userSlice";
 
 const Navbar = () => {
   const { user } = useAppSelector((state) => state.user);
+  const dispatch = useAppDispatch();
   const [theme, setTheme] = useState<string | null>(
     localStorage.getItem("book-log-theme")
       ? localStorage.getItem("book-log-theme")
       : "light"
   );
+  const handleLogout = () => {
+    signOut(auth).then(() => {
+      dispatch(setUser(null));
+    });
+  };
   useEffect(() => {
     localStorage.setItem("book-log-theme", theme!);
     document.querySelector("html")?.setAttribute("data-theme", theme!);
@@ -35,9 +44,14 @@ const Navbar = () => {
                 <Link to="/allbook">All books</Link>
               </li>
               {user.email ? (
-                <li>
-                  <p>Log out</p>
-                </li>
+                <>
+                  <li>
+                    <Link to='/add-book'>Add Book</Link>
+                  </li>
+                  <li>
+                    <p onClick={handleLogout}>Log out</p>
+                  </li>
+                </>
               ) : (
                 <>
                   <li>
